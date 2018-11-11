@@ -411,6 +411,51 @@ int has(char *path, int t_files, char **f_list)
 
    return 0;
 }
+
+char * t_perm(char * perm_point, struct header h, char mode []){
+   int i, x, length;
+   char typeflag[1];
+   typeflag[0] = (h.typeflag[0]);
+   switch(typeflag[0]){
+
+      case '2':
+         *(perm_point + 0) = '1';
+         break;
+
+      case '5':
+         *(perm_point + 0) = 'd';
+         break;
+
+      default:
+         *(perm_point + 0) = '-';
+         break;
+   }
+
+   length = strlen(h.mode);
+   x = 1;
+   /*copies the permissions into an array */
+   for(i = (length - 3); i <= (length-1); i++){
+      if((h.mode[i] == '4') || (h.mode[i] ==  '5')  || (h.mode[i] == '6') || (h.mode[i] ==  '7'))
+
+         *(perm_point + x) = 'r';
+      else
+         *(perm_point + x) = '-';
+
+      if((h.mode[i] == '2') || (h.mode[i] ==  '3')  || (h.mode[i] == '6') || (h.mode[i] ==  '7'))
+         *(perm_point + (x + 1)) = 'w';
+      else
+         *(perm_point + (x + 1)) = '-';
+
+      if((h.mode[i] == '1') || (h.mode[i] ==  '3')  || (h.mode[i] == '5') || (h.mode[i] ==  '7'))
+         *(perm_point + (x + 2)) = 'x';
+      else
+         *(perm_point + (x + 2)) = '-';
+      x = x + 3;
+   }
+   *(perm_point + 10) = '\0';
+   return perm_point;
+}
+
 /* function to get the path */
 char * pathget(char *name, int v, struct header h){
    int x;
