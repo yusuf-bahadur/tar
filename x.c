@@ -38,7 +38,7 @@ int main(int argc, char *argv[]){
    char ** f_list;
    int t_files;
    int i, flags;
-   int v = 1; //VERBOSE CHANGE
+   int v = 1; 
    flags = strlen(argv[1]);
    int status = 0;
    if (argc < 2){
