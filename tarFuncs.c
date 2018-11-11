@@ -429,8 +429,7 @@ char * pathget(char *name, int v, struct header h){
 }
 
 /* function to read in */
-int reader(int fd, void *buffer, size_t size)
-{
+int reader(int fd, void *buffer, size_t size){
    int sz = 0;
    if ((sz = read(fd, buffer, size)) < 0)
    {
@@ -440,8 +439,7 @@ int reader(int fd, void *buffer, size_t size)
    return sz;
 }
 /* function to write */
-int writer(int fdo, void *buffer, size_t size)
-{
+int writer(int fdo, void *buffer, size_t size){
    int sz = 0;
    if ((sz = write(fdo, buffer, size)) < 0)
    {
@@ -452,51 +450,6 @@ int writer(int fdo, void *buffer, size_t size)
 }
 
 /* functions to check the permissions for - t */
-char * t_perm(char * perm_point, struct header h, char mode []){
-   int i, x, length;
-   char typeflag[1];
-   length = strlen(h.mode);
-   typeflag[0] = (h.typeflag[0]);
-   switch(typeflag[0]){
-
-      case '2':
-         *(perm_point + 0) = '1';
-         break;
-
-      case '5':
-         *(perm_point + 0) = 'd';
-         break;
-
-      default:
-         *(perm_point + 0) = '-';
-         break;
-   }
-   x = 1;
-   /*copies the permissions into an array */
-   for(i = (length - 3); i <= (length-1); i++){
-      if((h.mode[i] == '4') || (h.mode[i] ==  '5')  || (h.mode[i] == '6') || (h.mode[i] ==  '7'))
-
-         *(perm_point + x) = 'r';
-      else
-         *(perm_point + x) = '-';
-
-      if((h.mode[i] == '2') || (h.mode[i] ==  '3')  || (h.mode[i] == '6') || (h.mode[i] ==  '7'))
-         *(perm_point + (x + 1)) = 'w';
-      else
-         *(perm_point + (x + 1)) = '-';
-
-      if((h.mode[i] == '1') || (h.mode[i] ==  '3')  || (h.mode[i] == '5') || (h.mode[i] ==  '7'))
-         *(perm_point + (x + 2)) = 'x';
-      else
-         *(perm_point + (x + 2)) = '-';
-      x = x + 3;
-   }
-   //printf(" permission number: %s\n", perm_point);
-   *(perm_point + 10) = '\0';
-   return perm_point;
-}
-
-/* function to set all t list */
 void t_names(char *file, int t_files, char **f_list, int v){
    char permission_array[11];
    char * perm_point;
@@ -530,19 +483,22 @@ void t_names(char *file, int t_files, char **f_list, int v){
                localtime_r(&time, &time_str);
                year = time_str.tm_year + 1900;
                month = time_str.tm_mon + 1;
-                
-               for(i = 0; i < 18; i++)
+               for(i = 0; i < 18; i++){
                   group[i] = '\0';
+               }
                strcat(group, h.uname);
                strcat(group, "/\0");
                strcat(group, h.gname);
                strcat(group, "\0");
 
+
                printf("%10s %-17s %8d %04d-%02d-%02d %02d:%02d %s\n",
                                              perm_point, group,
                                              size, year, month, time_str.tm_mday,
                                              time_str.tm_hour, time_str.tm_min,
-                                                                                                                                                                            546,4         85%
+                                             epathpoint);
+
+
             }
             else{
                printf("%s\n", epathpoint);
@@ -553,6 +509,8 @@ void t_names(char *file, int t_files, char **f_list, int v){
             lseek(fp, BLOCKSIZE *(file_sz/BLOCKSIZE + ((file_sz%BLOCKSIZE) ?1:0)), SEEK_CUR);
       }
 }
+
+/* function to set all t list */
 
 
 /* function to extract */
@@ -614,11 +572,9 @@ void extract(char *file, int t_files, char **f_list, int v){
              }
          }
 
-            file_sz = 0;
+         if (!(t_files == 0 || has(epathpoint, t_files, f_list))) {
             file_sz = strtol(h.size, NULL, 8);
             lseek(fp, BLOCKSIZE *(file_sz/BLOCKSIZE + ((file_sz%BLOCKSIZE) ?1:0)), SEEK_CUR);
          }
    }
 }
-
-
