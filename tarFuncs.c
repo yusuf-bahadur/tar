@@ -120,23 +120,18 @@ int create_regfile(int fd, char *path, int verb, mytar_t **archive) {
     /* Set condition value */
     *archive = get_checksum(*archive);
     memcpy((*archive)->block + jump, (*archive)->chksum, COMMON_SIZE);
-
     /* Write the header portion */
     write(fd, (*archive)->block, BLOCKSIZE);
-    
     /* Write the contents of the file if there is content */
     if ((rfd = open(path, O_RDONLY)) == -1) {
         perror("Error: ");
         return 1;
-    }    
-    
+    }   
     while ((buf_size = read(rfd, boof, BLOCKSIZE)) > 0) {
         write(fd, boof, BLOCKSIZE);
         memset(boof, 0, BLOCKSIZE);
     }
-    
     close(rfd);
-    
     return 0;
 }
 
@@ -171,7 +166,6 @@ mytar_t *fill_metadata(mytar_t *archive, struct stat buf, char *path) {
             strcat(archive->prefix, "\0");
         }
     }
-
     sprintf((archive)->mode, "%07o", buf.st_mode & MODE_MASK);
     sprintf((archive)->uid, "%07o", buf.st_uid);           
     sprintf((archive)->gid, "%07o", buf.st_gid);           
